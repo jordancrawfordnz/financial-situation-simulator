@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+require 'date'
+require 'money'
+require_relative '../lib/day_state'
+require_relative '../lib/simulate_day'
+require_relative '../lib/situation_variables'
+
+Money.use_i18n = false
+
+situation = SituationVariables.new(annualised_interest_rate: 10)
+
+initial_state = DayState.new(day: Date.today, savings: Money.new(100 * 100))
+calculate_until = Date.today + 5*365
+
+current_state = initial_state
+
+while (current_state.day < calculate_until) do
+
+  puts "#{current_state.day.iso8601} #{current_state.savings.format}"
+
+  current_state = SimulateDay.new(
+    day: current_state.day + 1,
+    initial_state: current_state,
+    variables: situation
+  ).run
+
+  puts "#{current_state.day.iso8601} #{current_state.savings.format}"
+end
