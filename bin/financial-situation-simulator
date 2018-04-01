@@ -2,6 +2,7 @@
 
 require 'date'
 require 'money'
+require_relative '../lib/monthly_transfer'
 require_relative '../lib/transaction'
 require_relative '../lib/investment'
 require_relative '../lib/bank_account'
@@ -13,15 +14,22 @@ Money.use_i18n = false
 calculate_until = Date.today + 150 + 365
 
 bank_account = BankAccount.new
-bank_account.add_transaction(Transaction.new(date: Date.today, amount: Money.new(1000 * 100)))
+bank_account.add_transaction(Transaction.new(date: Date.today + 150, amount: Money.new(1000 * 100)))
 
 investment = Investment.new(typical_annual_growth: 10)
 investment.add_transaction(Transaction.new(date: Date.today, amount: Money.new(1000 * 100)))
-investment.add_transaction(Transaction.new(date: Date.today + 150, amount: Money.new(500 * 100)))
+
+regular_investment = MonthlyTransfer.new(
+  amount: Money.new(100 * 100),
+  asset: investment,
+  schedule_from: Date.today
+)
+investment.add_repeated_transfer(regular_investment)
 
 current_situation = FinancialSituation.new(
   day: Date.today,
-  assets: [bank_account, investment]
+  assets: [bank_account, investment],
+  transfers: [regular_investment]
 )
 
 while (current_situation.day < calculate_until) do
