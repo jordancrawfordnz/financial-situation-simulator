@@ -36,7 +36,7 @@ bank_account.add_repeated_transfer(regular_weekly_bank)
 mortgage = Mortgage.new(
   date_initiated: Date.today,
   amount: Money.new(1000 * 100),
-  monthly_repayment: Money.new(50 * 100),
+  monthly_repayment: Money.new(100 * 100),
   annual_interest_rate: BigDecimal.new('5.5')
 )
 
