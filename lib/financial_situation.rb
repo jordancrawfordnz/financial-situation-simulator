@@ -10,6 +10,18 @@ class FinancialSituation
   end
 
   def total_assets
-    assets.sum { |asset| asset.value(day) }
+    asset_values.values.sum
+  end
+
+  def value_of(asset)
+    asset_values[asset]
+  end
+
+  private
+
+  def asset_values
+    @asset_values ||= assets.each_with_object({}) do |asset, asset_values|
+      asset_values[asset] = asset.value(day)
+    end
   end
 end

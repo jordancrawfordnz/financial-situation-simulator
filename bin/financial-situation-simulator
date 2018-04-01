@@ -43,5 +43,5 @@ while (current_situation.day < calculate_until) do
     current_situation: current_situation
   ).run
 
-  puts "#{current_situation.day.iso8601} Bank: #{bank_account.value(current_situation.day).format}, Investment: #{investment.value(current_situation.day).format}, Total: #{current_situation.total_assets.format}"
+  puts "#{current_situation.day.iso8601} Bank: #{current_situation.value_of(bank_account).format}, Investment: #{current_situation.value_of(investment).format}, Total: #{current_situation.total_assets.format}"
 end
