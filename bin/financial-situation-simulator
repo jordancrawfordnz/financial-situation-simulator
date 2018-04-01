@@ -2,6 +2,7 @@
 
 require 'date'
 require 'money'
+require_relative '../lib/weekly_transfer'
 require_relative '../lib/monthly_transfer'
 require_relative '../lib/transaction'
 require_relative '../lib/investment'
@@ -21,15 +22,19 @@ investment.add_transaction(Transaction.new(date: Date.today, amount: Money.new(1
 
 regular_investment = MonthlyTransfer.new(
   amount: Money.new(100 * 100),
-  asset: investment,
   schedule_from: Date.today
 )
 investment.add_repeated_transfer(regular_investment)
 
+regular_weekly_bank = WeeklyTransfer.new(
+  amount: Money.new(10 * 100),
+  schedule_from: Date.today
+)
+bank_account.add_repeated_transfer(regular_weekly_bank)
+
 current_situation = FinancialSituation.new(
   day: Date.today,
-  assets: [bank_account, investment],
-  transfers: [regular_investment]
+  assets: [bank_account, investment]
 )
 
 while (current_situation.day < calculate_until) do
@@ -38,5 +43,5 @@ while (current_situation.day < calculate_until) do
     current_situation: current_situation
   ).run
 
-  puts "#{current_situation.day.iso8601} #{current_situation.total_assets.format}"
+  puts "#{current_situation.day.iso8601} Bank: #{bank_account.value(current_situation.day).format}, Investment: #{investment.value(current_situation.day).format}, Total: #{current_situation.total_assets.format}"
 end

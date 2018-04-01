@@ -1,15 +1,7 @@
 require_relative 'transaction'
+require_relative 'regular_transfer'
 
-class MonthlyTransfer
-  attr_reader :amount, :asset, :schedule_from, :schedule_until
-
-  def initialize(amount:, asset:, schedule_from:, schedule_until: nil)
-    @amount = amount
-    @asset = asset
-    @schedule_from = schedule_from
-    @schedule_until = schedule_until
-  end
-
+class MonthlyTransfer < RegularTransfer
   def transactions_until_date(date)
     transactions_until = [date, schedule_until].compact.min
 

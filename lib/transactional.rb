@@ -10,6 +10,8 @@ module Transactional
     transactions << transaction
   end
 
+  protected
+
   def transactions_to_date(date)
     one_off_transactions = transactions.select { |transaction| transaction.date <= date }
     scheduled_transactions = repeated_transfers.flat_map { |t| t.transactions_until_date(date) }

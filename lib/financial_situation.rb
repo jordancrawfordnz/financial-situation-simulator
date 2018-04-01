@@ -1,13 +1,12 @@
 class FinancialSituation
-  attr_reader :day, :assets, :transfers
+  attr_reader :day, :assets
 
   # A financial situation tracks the assets, liabilities, etc at a point in time.
   # It can be used to determine the financial situation as of a particular day.
 
-  def initialize(day:, assets: [], transfers: [])
+  def initialize(day:, assets: [])
     @day = day
     @assets = assets
-    @transfers = transfers
   end
 
   def total_assets
