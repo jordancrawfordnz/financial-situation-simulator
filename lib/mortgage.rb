@@ -1,6 +1,7 @@
 require_relative 'liability'
 require_relative 'monthly_transfer'
 require_relative 'transaction'
+require_relative 'daily_compounding_interest'
 
 class Mortgage < Liability
   # TODO: Support some sort of monthly compounding from the interest.
@@ -16,7 +17,21 @@ class Mortgage < Liability
     setup_mortgage
   end
 
+  def value(date)
+    balance_on_date = interest.value(
+      transactions: transactions_to_date(date),
+      day: date
+    )
+
+    return balance_on_date < 0 ? balance_on_date : Money.new(0)
+  end
+
+
   private
+
+  def interest
+    @interest ||= DailyCompoundingInterest.new(rate: annual_interest_rate)
+  end
 
   def setup_mortgage
     # Take out the mortgage.
@@ -33,6 +48,5 @@ class Mortgage < Liability
   end
 
   class MortgageRepayment < MonthlyTransfer
-    # TODO: Stop mortgage payments once paid off.
   end
 end
