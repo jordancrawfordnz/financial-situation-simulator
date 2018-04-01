@@ -4,6 +4,7 @@ require 'date'
 require 'money'
 require_relative '../lib/weekly_transfer'
 require_relative '../lib/monthly_transfer'
+require_relative '../lib/mortgage'
 require_relative '../lib/transaction'
 require_relative '../lib/investment'
 require_relative '../lib/bank_account'
@@ -17,7 +18,7 @@ calculate_until = Date.today + 150 + 365
 bank_account = BankAccount.new
 bank_account.add_transaction(Transaction.new(date: Date.today + 150, amount: Money.new(1000 * 100)))
 
-investment = Investment.new(typical_annual_growth: 10)
+investment = Investment.new(typical_annual_growth: BigDecimal.new(10))
 investment.add_transaction(Transaction.new(date: Date.today, amount: Money.new(1000 * 100)))
 
 regular_investment = MonthlyTransfer.new(
@@ -32,9 +33,16 @@ regular_weekly_bank = WeeklyTransfer.new(
 )
 bank_account.add_repeated_transfer(regular_weekly_bank)
 
+mortgage = Mortgage.new(
+  date_initiated: Date.today,
+  amount: Money.new(1000 * 100),
+  monthly_repayment: Money.new(50 * 100),
+  annual_interest_rate: BigDecimal.new('5.5')
+)
+
 current_situation = FinancialSituation.new(
   day: Date.today,
-  assets: [bank_account, investment]
+  assets: [bank_account, investment, mortgage]
 )
 
 while (current_situation.day < calculate_until) do
@@ -43,5 +51,5 @@ while (current_situation.day < calculate_until) do
     current_situation: current_situation
   ).run
 
-  puts "#{current_situation.day.iso8601} Bank: #{current_situation.value_of(bank_account).format}, Investment: #{current_situation.value_of(investment).format}, Total: #{current_situation.total_assets.format}"
+  puts "#{current_situation.day.iso8601} Mortgate: #{current_situation.value_of(mortgage).format}, Bank: #{current_situation.value_of(bank_account).format}, Investment: #{current_situation.value_of(investment).format}, Total: #{current_situation.total_assets.format}"
 end
